@@ -1,4 +1,5 @@
 import random
+import tkinter
 from tkinter import *
 
 GAME_WIDTH = 700
@@ -9,6 +10,7 @@ BODY_PARTS = 3
 SNAKE_COLOR = "#A020F0"
 FOOD_COLOR = "#FF0000"
 BACKGROUND_COLOR = "#000000"
+
 
 class Snake():
     def __init__(self):
@@ -106,9 +108,30 @@ def check_collisions(snake):
     return False
 
 def game_over():
+    global retry
     canvas.delete(ALL)
-    canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, font=('consolas',70), text="Game Over", fill="red", tags='game0ver')
+    canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, font=('consolas',70), text="GAME OVER", fill="red", tags='game0ver')
+    retry = tkinter.Button(window, text="Retry", font=('consolas', 23), command=Restart)  # Removed the parentheses after Restart
+    retry.place(x=300, y=500)
 
+def Restart():
+    retry.destroy()
+    global snake, food, score, direction
+
+    # Reset score and direction
+    score = 0
+    direction = 'down'
+    label.config(text="Score : {}".format(score))
+
+    # Clear the canvas
+    canvas.delete("all")
+
+    # Recreate snake and food objects
+    snake = Snake()
+    food = Food()
+
+    # Restart the game
+    next_turn(snake, food)
 #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 window = Tk()
@@ -132,6 +155,7 @@ screen_height = window.winfo_screenheight()
 x = int((screen_width/2) - (window_width/2))
 y = int((screen_height/2) - (window_height/2))
 window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
 
 window.bind('<Left>', lambda event: change_direction('left'))
 window.bind('<Right>', lambda event: change_direction('right'))
